@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Mastercard Click to Pay</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+  <!-- SRC UI Kit 
+    REF - https://developer.mastercard.com/unified-checkout-solutions/documentation/use-cases/click-to-pay/ui-components/#how-to-use 
+     -->
+  <script type="module"
+    src="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.esm.js"></script>
+  <link rel="stylesheet" href="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.css">
+
+  <!-- Click to Pay SDK
+   REF - https://developer.mastercard.com/unified-checkout-solutions/tutorial/integrate_apis/step2/
+    -->
+  <script
+    src="https://sandbox.src.mastercard.com/srci/integration/2/lib.js"> </script>
+
+  <style>
+    
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <!-- OTP Modal -->
+    <div id="otp-modal" class="modalDiv">
+      <iframe id="otpFrame" name="otpFrame" class="opt-modal-content"></iframe>
+    </div>
+    <!-- Click to pay Modal -->
+    <div id="c2p-modal" class="modalDiv">
+      <iframe id="ctpFrame" name="ctpFrame" class="modal-content"></iframe>
+    </div>
+
+
+    <div class="container mt-5" hidden>
+      <h3 class="mb-4">Order Summary</h3>
+
+      <!-- Order Item -->
+      <div class="card mb-3">
+        <div class="row g-0">
+          <!-- Product Image -->
+          <div class="col-md-3">
+            <img
+              src="https://www.shutterstock.com/image-illustration/realistic-stereo-headphone-isolated-on-600nw-2346717451.jpg"
+              class="img-fluid rounded-start" alt="Product Image">
+          </div>
+          <!-- Product Details -->
+          <div class="col-md-9">
+            <div class="card-body">
+              <h5 class="card-title">Wireless Headphones</h5>
+              <p class="card-text">Premium over‑ear headphones with long battery life and immersive sound quality.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Qty: 1</span>
+                <span class="fw-bold">$50.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Total -->
+      <div class="d-flex justify-content-end mt-3">
+        <h5>Total: <span class="fw-bold">$50.00</span></h5>
+      </div>
+    </div>
+    <br>
+    <div class="container mt-1">
+        <h1 class="text-center"><u>Click to Pay Demo</u></h1>
+    </div>
+    <div class="container mt-5">
+      <h4 class="mb-2">Configuration</h4>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="OTPCheckbox" checked>
+        <label class="form-check-label" for="flexCheckDefault">
+          OTP Embedded
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" checked disabled>
+        <label class="form-check-label" for="flexCheckChecked">
+          DCF Pop-up
+          <br/> <p><small>Note: DCF (digital card faciliator) has to be pop-up for 3DS/Passkeys to work</small></p>
+        </label>
+      </div>
+    </div>
+
+    <div class="container mt-3">
+      <h4 class="mb-2">Checkout</h4>
+     
+      <form id="checkoutForm">
+         <src-mark style="height:10 vh" width="" height="" theme="" card-brands="[&quot;mastercard&quot;]"> </src-mark>
+      <br>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" value="test@mailinator.com" required>
+        </div>
+
+        <!-- Mobile -->
+        <div class="mb-3">
+          <label for="mobile" class="form-label">Mobile Number</label>
+          <input type="tel" class="form-control" id="mobile" value="411222333" required>
+        </div>
+
+        <!-- Shipping Address -->
+        <h5 class="mt-4">Shipping Address</h5>
+        <div class="mb-3">
+          <label for="address" class="form-label">Street Address</label>
+          <input type="text" class="form-control" id="address" value="101 Pitt St">
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" value="Sydney">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="state" class="form-label">State</label>
+            <input type="text" class="form-control" id="state" value="NSW">
+          </div>
+          <div class="col-md-2 mb-3">
+            <label for="zip" class="form-label">Zip</label>
+            <input type="text" class="form-control" id="zip" value="2000">
+          </div>
+        </div>
+
+  
+        <div class="row">
+          <div class="mb-3 text-center pt-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+      
+      <div id="card-list-div" class="row p-3">
+        <label class="form-label">Select card to place order</label>
+        <!-- Card list -->
+          <src-card-list id="srcCardList" locale="en_AU" card-brands="mastercard,visa,maestro" display-cancel-option="false"
+           display-add-card="false" display-preferred-card="true" display-sign-out="false" card-selection-type="radioButton" 
+           src-digital-card-id="NONE" display-header="true" background="transparent" >
+        </src-card-list>
+      </div>
+
+      <div class="container mt-4 d-none" id="otp-div">
+         <src-mark style="height:10 vh" width="" height="" theme="" card-brands="[&quot;mastercard&quot;]"> </src-mark>
+        <iframe id="otpEmbFrame" name="otpEmbFrame" height="500px" width="400px"></iframe>
+      </div>
+
+      <div class="container mt-4">
+        <!-- Alert -->
+        <div id="myAlert" class="alert alert-warning d-none" role="alert">
+          <strong>Warning!</strong> We couldn’t recognize your Mastercard Click to Pay profile using the provided email or mobile. Please enter valid details.
+        </div>
+
+        <div id="myOrderAlert" class="alert alert-success d-none" role="alert">
+            <strong>Success!</strong> . Your order has been placed.
+        </div>
+
+        <div id="errorAlert" class="alert alert-danger d-none" role="alert">
+            <strong>Error!</strong> processing payment - retry
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+      
+<br>
+<br>
+<!-- <button id="lookupEmail" type="button" class="btn btn-primary">Email Lookup</button>
+<button id="lookupMobile" type="button" class="btn btn-primary">Mobile Lookup</button> -->
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="index.js"></script>
+
+</html>
